@@ -1,0 +1,2 @@
+# JSNotes
+JavaScript笔记
