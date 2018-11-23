@@ -43,7 +43,7 @@ JavaScript笔记
 > 	对累加器和数组中的每个元素（从左到右）应用一个函数，将其减少为1个值
 >
 > 回调函数有两个必须的参数
-
+>
 > * total 累加器累加回调的返回值，上次回调的和
 > * it 当前元素
 
@@ -144,7 +144,7 @@ JavaScript笔记
 #### 2、❗️不绑定this
 > 在箭头函数出现之前，每个新定义的函数都有其自己的 this 值（例如，构造函数的 this 指向了一个新的对象；
 >
->  <span style="color: red"> 严格模式</span>下的函数的 this 值为 undefined，如果函数是作为对象的方法被调用的，则其 this 指向了那个调用它的对象）
+> <font color="red">严格模式</font>下的函数的 this 值为 undefined，如果函数是作为对象的方法被调用的，则其 this 指向了那个调用它的对象）
 >
 > **箭头函数会捕获所在上下文的 this 值，作为自己的 this 值**
 >
@@ -171,7 +171,7 @@ JavaScript笔记
 	console.log(adder.add(1)); // 输出 2
 	console.log(adder.addCall(1)); // 仍然输出 2（而不是3，call传入的this无效）
 
-#### 3、不绑定<span style="color: red">arguments对象
+#### 3、不绑定<font color="red">arguments对象</font>
 
 > 箭头函数不会在其内部暴露出 arguments 对象，
 >
