@@ -2,29 +2,265 @@
 JavaScript笔记
 
 ## 目录
-* [js遍历方法](#js遍历方法)
+* [ES5中Array方法](#es5中array方法)
 * [call、apply、bind区别](#callapplybind区别)
 * [箭头函数与普通function区别](#箭头函数与普通function区别)
 
-## js遍历方法
-### every
+## ES5中Array方法
+### Array.isArray()
 
->数组中每一项都符合判断条件返回true
+> 返回布尔值，可以弥补typeof运算符的不足
+
+	const arr = [1, 2, 3];
+	typeof arr // "object"
+	Array.isArray(arr) // true
+	
+### valueOf()
+
+> 所有对象都拥有的方法，对该对象求值，返回数组本身
+	
+	const arr = [1, 2, 3];
+	arr.valueOf() // [1, 2, 3]
+
+### toString()
+
+> 所有对象都拥有的方法，返回数组的字符串形式
+	
+	const arr = [1, 2, 3];
+	arr.toString() // "1,2,3"
+	
+	var arr = [1, 2, 3, [4, 5, 6]];
+	arr.toString() // "1,2,3,4,5,6"
+	
+### push()
+
+> 在数组的末端添加一个或多个元素，返回添加新元素后的数组长度
+> 
+> **该方法会改变原数组**
+
+	var arr = [];
+	arr.push(1) // 1
+	arr.push('a') // 2
+	arr.push(true, {}) // 4
+	arr // [1, 'a', true, {}]
+	
+### pop()
+
+> 删除数组的最后一个元素，并返回该元素
+> 
+> **该方法会改变原数组**
+> 
+> 空数组使用pop方法，不会报错，而是返回undefined
+> 
+> push和pop结合使用，就构成了“后进先出”的栈结构（stack）
+
+	
+	var arr = ['a', 'b', 'c'];
+	arr.pop() // 'c'
+	arr // ['a', 'b']
+	[].pop() // undefined
+
+### shift()
+
+> 删除数组的第一个元素，返回该元素
+> 
+> **该方法会改变原数组**
+> 
+> 可以遍历并清空一个数组
+> 
+> push和shift结合使用，就构成了“先进先出”的队列结构（queue）
+
+	const a = ['a', 'b', 'c'];
+	a.shift()  // 'a'
+	a  // ['b', 'c']
+	
+	const list = [1, 2, 3, 4, 5, 6];
+	const item;
+	
+	while (item = list.shift()) {
+	  console.log(item);
+	}
+	list // []
+
+### unshift()
+
+> 在数组的第一个位置添加元素，返回添加新元素后的数组长度
+> 
+> 可以接受多个参数，参数都会添加到目标数组头部 
+> 
+> **该方法会改变原数组**
+
+	const a = ['a', 'b', 'c'];
+	a.unshift('x'); // 4
+	a // ['x', 'a', 'b', 'c']
+	
+	const arr = [ 'c', 'd' ];
+	arr.unshift('a', 'b') // 4
+	arr // [ 'a', 'b', 'c', 'd' ]
+	
+### join()
+> 指定参数作为分隔符，将数组转换为字符串
+> 
+> 不提供参数，默认用`,`分隔，与`toString()`类似
 >
->`[].every(() => {})` 返回true
+> 如果数组成员是undefined或null或空位，会被转成空字符串
+
+	const a = [1, 2, 3, 4];
+	a.join(' ')  // '1 2 3 4'
+	a.join(' | ')  // "1 | 2 | 3 | 4"
+	a.join()  // "1,2,3,4"
+	
+	[undefined, null].join('#')  // '#'
+	['a',, 'b'].join('-')  // 'a--b'
+	
+### concat()
+
+> 多个数组合并，将新数组添加到原数组后面，返回新数组，原数组不变
+> 
+> 参数类型可以为array，object，string，number，参数可以是多个
+
+	['hello'].concat(['world'])  // ["hello", "world"]
+	['hello'].concat(['world'], ['!'])  // ["hello", "world", "!"]
+	[].concat({a: 1}, {b: 2})  // [{ a: 1 }, { b: 2 }]
+	[2].concat({a: 1})  // [2, {a: 1}]
+	[1, 2, 3].concat(4, 5, 6)  // [1, 2, 3, 4, 5, 6]
+
+**==== 敲黑板👏👏👏划重点❗️❗️❗️====**
+> 如果数组成员包括对象，concat方法返回当前数组的一个浅拷贝
+> 
+> 浅拷贝指的是新数组返回的是对象的引用，原对象改变，新数组也会变
+
+	const obj = { a: 1 };
+	const oldArray = [obj];
+	let newArray = oldArray.concat();
+	obj.a = 2;
+	newArray[0].a  // 2 而不是1
+
+### reverse()
+
+> 将数组元素倒序排列，返回改变后的数组
+> 
+> **该方法会改变原数组**
+	
+	const a = ['a', 'b', 'c'];
+	a.reverse() // ["c", "b", "a"]
+	a // ["c", "b", "a"]
+	
+### slice()
+	
+	arr.slice(start, end);
+
+> 提取数组中某一部分，前包后不包，原数组不变
+> 
+> 第一个参数为起始位置（从0开始），第二个参数为终止位置
+> 
+> 参数是负数，从后面计算位置
+
+	const a = ['a', 'b', 'c'];
+	a.slice(0)  // ["a", "b", "c"]
+	a.slice(1)  // ["b", "c"]
+	a.slice(1, 2)  // ["b"]
+	a.slice(2, 6)  // ["c"]
+	a.slice()  // ["a", "b", "c"]
+	
+	// -2表示倒数计算的第二个位置
+	a.slice(-2) // ["b", "c"]
+	a.slice(-2, -1) // ["b"]
+	a.slice(4) // []
+
+> slice方法的一个重要应用，是将类似数组的对象转为真正的数组
+
+	Array.prototype.slice.call({ 0: 'a', 1: 'b', length: 2 })  // ['a', 'b']
+
+	Array.prototype.slice.call(document.querySelectorAll("div"));
+	Array.prototype.slice.call(arguments);
+
+### splice()
+	
+	arr.splice(start, count, addElement1, addElement2, ...);
+	// 从某个位置开始，删除元素个数，添加元素...
+
+> 删除数组中某一部分成员，并可以在删除的位置添加新的数组成员
+> 
+> 返回被删除的元素
+> 
+> **该方法会改变原数组**
+
+	
+	const a = ['a', 'b', 'c', 'd', 'e', 'f'];
+	a.splice(4, 2)  // ["e", "f"]
+	a  // ["a", "b", "c", "d"]
+	
+	a.splice(4, 2, 1, 2)  // ["e", "f"]
+	a  // ["a", "b", "c", "d", 1, 2]
+	
+	a.splice(-4, 2)  // ["c", "d"]
+	
+	// 插入元素，count设置为0
+	const a = [1, 1, 1];
+	a.splice(1, 0, 2)  // []
+	a  // [1, 2, 1, 1]
+	
+	// 只有1个参数，将原数组在指定位置拆分成两个数组
+	const a = [1, 2, 3, 4];
+	a.splice(2) // [3, 4]
+	a // [1, 2]
+			
+### sort()
+
+> 对数组成员进行排序，默认按照字典顺序排
+> 
+> **该方法会改变原数组**
+
+	['d', 'c', 'b', 'a'].sort()  // ['a', 'b', 'c', 'd']
+	[4, 3, 2, 1].sort()  // [1, 2, 3, 4]
+	[11, 101].sort()  // [101, 11]
+	[10111, 1101, 111].sort()  // [10111, 1101, 111]
+	
+	[10111, 1101, 111].sort(function (a, b) {
+	  return a - b;
+	})
+	// [111, 1101, 10111]
+	
+	[
+	  { name: "张三", age: 30 },
+	  { name: "李四", age: 24 },
+	  { name: "王五", age: 28  }
+	].sort(function (o1, o2) {
+	  return o1.age - o2.age;
+	})
+	// [
+	//   { name: "李四", age: 24 },
+	//   { name: "王五", age: 28  },
+	//   { name: "张三", age: 30 }
+	// ]
+
+### every
+> 数组中每一项都符合判断条件返回true
+>
+> `[].every(() => {})` 返回true，回调函数不会执行
+> 
+> 可以接受第二个参数，用来绑定参数函数内部的this变量
 
 	const a = [1, 2, 3, 4, 5, 6]
 	a.every(it => it > 0)  // true
    	a.every(it => it > 5 ) // false
+
 ### some
 > 数组中某一项满足判断条件返回true
 >
-> `[].some(() => {})` 返回false
+> `[].some(() => {})` 返回false，回调函数不会执行
+> 
+> 可以接受第二个参数，用来绑定参数函数内部的this变量
 
 	const a = [1, 2, 3, 4, 5, 6]
 	a.some(it => it > 0)  // true
    	a.some(it => it > 5 ) // true
+
 ### map
+
+	 arr1.map((it, index, arr1) => {}, arr2)
+
 > 原数组中每个元素执行callback后返回新数组
 >
 > 可以通过callback改变原数组
@@ -33,37 +269,163 @@ JavaScript笔记
 	a.map(it => it * 2)  // [2, 4, 6, 8, 10, 12]
 	a.map(it => it > 2)  // [false, false, true, true, true, true]
 
-### filter
-> 将原数组中符合判断条件的返回到新数组
+> 第二个参数（arr2），用来绑定回调函数内部的this变量
 
-	const a = [1, 2, 3, 4, 5, 6]
-	a.filter(it => it > 2)   // [3, 4, 5, 6]
-	a.filter(it => it > 6)   // []
-### reduce
-> 	对累加器和数组中的每个元素（从左到右）应用一个函数，将其减少为1个值
->
-> 回调函数有两个必须的参数
->
-> * total 累加器累加回调的返回值，上次回调的和
-> * it 当前元素
+	const arr = ['a', 'b', 'c'];
 
- 	const a = [1, 2, 3, 4, 5, 6]
-	a.reduce((total, it) => total + it)  // 21
+	[1, 2].map(function (e) {
+	  return this[e];
+	}, arr)
+	// ['b', 'c']  将回调函数内部的this对象，指向arr数组
 
-> 如果判断条件只操作it，不操作total，将会只处理数组最后一项
-
-	const a = [1, 2, 3, 4, 5, 6]
-	a.reduce((total, it) => it * 2)  // 12
+> 如果数组有空位，map方法的回调函数在这个位置不会执行，会跳过数组的空位
+> 
+> 不会跳过`undefined`和`null`
+	
+	const f = n => 'a';
+	[1, undefined, 2].map(f)  // ["a", "a", "a"]
+	[1, null, 2].map(f)  // ["a", "a", "a"]
+	[1, , 2].map(f)  // ["a", , "a"]
 
 ### forEach
+	 与map用法相似
+	 arr1.forEach((it, index, arr1) => {}, arr2)
+
 > 将原数组中的每个元素执行一次callback函数，无返回值，for循环的简化版
 >
 > 可以通过callback函数更改原数组
 
 	const a = [1, 2, 3, 4, 5, 6]
 	a.forEach((it, index) => a[index] = it * 2)
-	console.log(a)  // [2, 4, 6, 8, 10, 12]
+	console.log(a)  // [2, 4, 6, 8, 10, 12] 
 
+	const out = [];
+	[1, 2, 3].forEach(function(it) {
+	  this.push(it * it);
+	}, out);
+	out // [1, 4, 9]  回调函数内部的this关键字就指向out
+	
+	// 跳过数组的空位，不会跳过undefined和null
+	const log = n => console.log(n + 1);
+	  	
+	[1, undefined, 2].forEach(log)
+	// 2
+	// NaN
+	// 3
+	
+	[1, null, 2].forEach(log)
+	// 2
+	// 1
+	// 3
+	
+	[1, , 2].forEach(log)
+	// 2
+	// 3
+
+**==== 敲黑板👏👏👏划重点❗️❗️❗️====**
+
+> forEach方法无法中断执行，会将所有成员遍历完
+> 
+> 如果希望符合某种条件时，就中断遍历，要使用for循环
+
+	const arr = [1, 2, 3];
+
+	for (let i = 0; i < arr.length; i++) {
+	  if (arr[i] === 2) break;
+	  console.log(arr[i]);
+	}
+	// 1  forEach无法实现	
+
+### filter
+ 
+	 arr1.map((it, index, arr1) => {}, arr2)
+
+> 将原数组中符合判断条件的返回到新数组
+> 
+> arr2改变this绑定
+
+	const a = [1, 2, 3, 4, 5, 6]
+	a.filter(it => it > 2)   // [3, 4, 5, 6]
+	a.filter(it => it > 6)   // []
+	
+	// 返回数组里所有布尔值为true的成员
+	[0, 1, 'a', false].filter(Boolean)  // [1, "a"]
+	
+	// 改变this绑定
+	const obj = { MAX: 3 };
+	const myFilter = item => {
+	  if (item > this.MAX) return true;
+	};
+	const arr = [2, 8, 3, 4, 1, 3, 2, 9];
+	arr.filter(myFilter, obj)  // [8, 4, 9]
+	
+### reduce()
+	arr.reduce((total, it, index, arr) => {}, initTotal)
+> 将数组中的每个元素（从左到右）应用一个函数，将其减少为1个值
+>
+> 回调函数有4个参数
+>
+> * total 累加器累加回调的返回值，上次回调的和，必须
+> * it 当前元素，必须
+> * index 索引
+> * arr 原数组
+> 
+> reduce第二个参数
+> 
+> * 累计变量的初始值，it会从数组第一个开始，处理空数组时有用
+
+ 	const a = [1, 2, 3, 4, 5, 6]
+	a.reduce((total, it) => total + it)  // 21
+	
+	[1, 2, 3, 4, 5].reduce((a, b) => a + b, 10);  // 25
+
+	function add(prev, cur) {
+	  return prev + cur;
+	}
+	
+	[].reduce(add)
+	// TypeError: Reduce of empty array with no initial value
+	[].reduce(add, 1)
+	// 1
+	
+> 如果判断条件只操作it，不操作total，将会只处理数组最后一项
+
+	const a = [1, 2, 3, 4, 5, 6]
+	a.reduce((total, it) => it * 2)  // 12
+
+### reduceRight()
+
+> 将数组中的每个元素（从右到左）应用一个函数，将其减少为1个值，其余和reduce用法一样
+
+	const fun = (prev, cur) => prev - cur;
+	
+	[3, 2, 1].reduce(fun)  // 0  相当于3-2-1
+	[3, 2, 1].reduceRight(fun)  // -4  相当于 1-2-3
+
+### indexOf()	
+> 1个参数时，找到返回索引值，未找到返回`-1`
+> 
+> 2个参数时，从索引位置开始查找，未找到返回`-1`
+
+	const a = [1, 2, 3, 4, 5, 1]
+	a.indexOf(1)  // 0
+	a.indexOf(5)  // 4
+	
+### lastIndexOf()	
+
+> 返回给定元素在数组中最后一次出现的位置，如果没有出现则返回-1
+	
+	const a = [2, 5, 9, 2];
+	a.lastIndexOf(2)  // 3
+	a.lastIndexOf(7)  // -1
+**==== 敲黑板👏👏👏划重点❗️❗️❗️====**
+> `indexOf()``lastIndexOf()`不能用来搜索NaN的位置，它们无法确定数组成员是否包含NaN
+> 
+> 方法内部，使用严格相等运算符（===）进行比较，NaN是唯一一个不等于自身的值
+
+	[NaN].indexOf(NaN) // -1
+	[NaN].lastIndexOf(NaN) // -1
+	
 ## call、apply、bind区别
 #### 相同点
 > 改变函数this对象的指向
