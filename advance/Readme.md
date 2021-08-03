@@ -332,7 +332,64 @@ f = null; // 闭包死亡，包含闭包的函数对象成为垃圾对象
     - 没有及时清理定时器
     - 闭包
 
+## 进程`process`与线程`thread`
+- 进程：程序的一次执行，占有的一片独有的内存空间，可以通过任务管理器查看
+- 线程：是进程内的独立执行单元，是程序执行的完整流程，是CPU最小的调度单元，代码在线程中执行
+- 一个程序可以对应多个进程（多进程），一个进程也可以对应多个线程（多线程），一个进程对应一个线程称为单线程
+- 应用程序必须运行在某个进程的某个线程上
+- 一个程序中至少有一个运行的线程：主线程，进程启动后自动创建
+- 一个进程内的数据可以供其他多个线程直接共享
+- 多个进程之间的数据不能直接共享
+- 线程池：保存多个线程对象的容器，实现线程对象的反复利用
+- 多线程（共同执行，先执行第一个，然后第一个暂停，执行第二个，第二个暂停，再执行第一个）优缺点
+  - 能有效提升CPU的利用率
+  - 创建多线程开销，线程间切换开销
+  - 死锁和状态同步问题
+- 单线程（从上往下依次执行）优缺点
+  - 顺序编程简单易懂
+  - 效率低
   
+## JS是单线程执行的
+- `setTimeout()`的回调函数是在主线程中运行的
+- 定时器的回调函数只有在运行栈中的代码全部执行完后才有可能执行
+- JS的主要用途是与用户交互、操作DOM，使用单线程比较简单，否则会带来很多同步问题
+- JS引擎是在主线程中执行，DOM/setTimeout/ajax是在分线程的模块中，等到回调函数要执行时候会放到回调队列`callback queue`中等待执行
+
+## Web Workers 多线程
+> Web Workers是HTML5提供的JS多线程解决方案，可以将大计算量的代码交给分线程运行而不冻结用户操作界面
+> 
+> 子线程完全受主线程控制，且不能操作DOM，新标准并没有改变JS单线程的本质
+> 
+> 不是所有浏览器都支持，比都在主线程运行慢，不能跨域加载js，分线程不能操作UI
+
+```js
+// 根据位置计算裴波那契数列
+// 主线程
+const input = document.getElementById('number');
+document.getElementById('btn').onclick = function () { 
+  const number = input.value;
+  const worker = new Worker('worker.js');
+  // 向分线程发送消息
+  worker.postMessage(number);
+  worker.onmessage = function (ev) { 
+    console.log('分线程返回的数据---', ev.data);
+  };
+  console.log(this); // window
+}
+
+// worker.js
+function fibonacci(n) {
+  return n <= 2 ? 1 : fibonacci(n - 2) + fibonacci(n - 1);
+};
+const onmessage = function (ev) {
+  const number = ev.data; // 接受主线程发送的数据
+  const result = fibonacci(number);
+  postMessage(result); // 向主线程返回数据
+};
+console.log(this); // 不是window,是WorkerGlobalScope全局对象,所以不能操作DOM
+
+```
+
 
 
 
