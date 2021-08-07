@@ -389,7 +389,29 @@ const onmessage = function (ev) {
 console.log(this); // 不是window,是WorkerGlobalScope全局对象,所以不能操作DOM
 
 ```
+## 跨域问题
+> 同源策略产生，协议、域名、端口号不同
 
+解决方法
+
+1.JSONP
+
+- 非官方跨域解决方案，只支持`get`请求 
+- 工作原理
+  - 网页中有一些标签具有跨域能力，例如`img/link/iframe/script`
+  - JSONP利用`script`标签的跨域能力发送请求
+- 使用
+  - 动态创建`script`标签
+  - 将`src`属性设置为接口地址
+  - 将`script`插入到文档中
+  - 声明一个处理函数，参数为接口返回的数据
+  - 接口返回的是页面处理函数的调用
+  
+2.CORS
+- 后端通过设置响应头允许跨域
+
+
+  
 
 
 

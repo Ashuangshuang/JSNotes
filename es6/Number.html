@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Number扩展</title>
+</head>
+<body>
+<script>
+	// Number.EPSILON JS表示的最小精度
+	console.log(0.1 + 0.2 === 0.3); // false
+	const equal = (a,b) => {
+	  if (Math.abs(a - b) < Number.EPSILON) {
+	    return true
+		}
+	  return false;
+	};
+  console.log(equal(0.1 + 0.2, 0.3)); // true
+
+	// 二进制、八进制
+	let b = 0b1010; // 二进制0b 10
+	let o = 0o777; // 八进制0o 511
+	let d = 100; // 十进制
+	let x = 0xff; // 十六进制0x 255
+
+	// Number.isFinite() 检测一个数是否为有限数
+	console.log(Number.isFinite(100)); // true
+  console.log(Number.isFinite(100/0)); // false
+  console.log(Number.isFinite(Infinity)); // false Infinity无穷
+
+	// Number.isNaN 检查数值是否为NaN
+  console.log(NaN === NaN); // false
+  console.log(Number.isNaN(NaN)); // true
+
+	// Number.parseInt/parseFloat 将字符串转为整数
+	console.log(parseInt('123I LOVA YOU'));
+  console.log(parseFloat('1.23I LOVA YOU'));
+
+  // Number.isInteger 是否为整数
+  console.log(Number.isInteger(20)); // true
+  console.log(Number.isInteger(2.3)); // false
+
+	// Math.trunc 把小数抹掉
+  console.log(Math.trunc(3.5)); // 3
+
+	// Math.sign 判断一个数是正数（返回1）、0 、负数（返回-1）
+  console.log(Math.sign(10)); // 1
+  console.log(Math.sign(0)); // 0
+  console.log(Math.sign(-10)); // -1
+
+</script>
+
+</body>
+</html>

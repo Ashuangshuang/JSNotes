@@ -505,14 +505,14 @@ JavaScript笔记
 
 	const b = arr.map(it => it);  // 相当于 (it) => { return it; }
 
-#### 2、❗️不绑定this
+#### 2、❗️不绑定this，this是静态的
 > 在箭头函数出现之前，每个新定义的函数都有其自己的 this 值（例如，构造函数的 this 指向了一个新的对象；
 >
 > <font color="red">严格模式</font>下的函数的 this 值为 undefined，如果函数是作为对象的方法被调用的，则其 this 指向了那个调用它的对象）
 >
-> **箭头函数会捕获所在上下文的 this 值，作为自己的 this 值**
+> **箭头函数会捕获所在上下文的 this 值，作为自己的 this 值**， this 始终指向函数声明时所在作用域下的this值
 >
-> **使用 call、apply 调用函数时，只是传入参数，对 this 无影响**
+> **使用 call、apply 调用函数时，不能改变 this 的指向**
 
 	const adder = {
 	  base : 1,
@@ -569,8 +569,13 @@ JavaScript笔记
 
 	console.log(fun2());  // 报错 fun2 is not defined
 	const fun2 = () => 2
-
-
+#### 5、不能作为构造函数实例化对象
+```js
+let Person = (name) => {
+  this.name = name;
+};
+const per = new Person('LINA');// Person is not a constructor
+```
 ## 作用域
 ### 全局作用域
 > 全局变量： 会挂载到 window 对象上

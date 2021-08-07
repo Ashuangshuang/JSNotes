@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Generator</title>
+</head>
+<body>
+<script>
+	// 异步应用，避免回调地狱，依次执行
+	function getUser() {
+	  setTimeout(() => {
+	    let data = '用户数据';
+	    iterator.next(data); // 传入的数据是上次yield 语句的返回值
+		}, 1000)
+	};
+  function getOrder() {
+    setTimeout(() => {
+      let data = '订单数据';
+      iterator.next(data);
+    }, 1000)
+  };
+  function getGood() {
+    setTimeout(() => {
+      let data = '商品数据';
+      iterator.next(data);
+    }, 1000)
+  };
+
+  function * gen() {
+    const user = yield getUser();
+    console.log(user);
+    const order = yield getOrder();
+    console.log(order);
+    const good = yield getGood();
+    console.log(good);
+  }
+
+	const iterator = gen();
+  iterator.next();
+
+</script>
+
+</body>
+</html>
