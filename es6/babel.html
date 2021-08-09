@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Babel</title>
+</head>
+<body>
+<h1>Babel对ES6模块化</h1>
+<!--
+	1.先npm init --yes 再安装工具：
+	babel-cli（babel命令行工具）
+	babel-preset-env（预设包，能将最新的ECMA Script转换为ES5语法）
+	browserify(打包工具)
+
+	// 局部安装使用npx 全局安装可直接使用babel命令
+	2.npx babel es6/js -d dist/js --presets=babel-preset-env  转化成ES5 直接页面引用报错 require语法不识别
+	3.打包 npx browserify dist/js/app.js -o dist/bundle.js // 只需找到入口文件，会将引入的文件也打进去
+
+-->
+<script src="../dist/bundle.js"></script>
+
+</body>
+</html>

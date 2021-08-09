@@ -51,6 +51,38 @@
 	const team = ['A'];
   team.push('B');
 
+  // const str = `<a href='http://baidu.com'>百度</a>`;
+  // const reg = /<a href='(?<url>.*)'>(?<text>.*)<\/a>/;
+  // const result = reg.exec(str);
+  // console.log(result[1]);
+  // console.log(/e/.exec('e 1234445'))
+	//
+  // console.log('23070619951009022X'.replace(/^(.{6})(?:\d+)(.{4})$/, '\$1****\$2'));
+
+  let s = `
+  	<ul>
+  		<li>
+  			<a>肖申克的救赎</a>
+  			<p>上映时间：1994-09-10</p>
+			</li>
+  		<li>
+  			<a>阿甘正传</a>
+  			<p>上映时间：1994-07-15</p>
+			</li>
+		</ul>
+  `;
+  // const r = /<li>\s+<a>(.*?)<\/a>\s+<p>(.*?)<\/p>/;
+	// .*? 加的？表示不能贪婪匹配
+  // 加上 s 匹配模式.能匹配任意字符，包含换行符
+	// g 执行全局匹配（查找所有匹配而非在找到第一个匹配后停止）
+	const r = /<li>.*?<a>(.*?)<\/a>.*?<p>(.*?)<\/p>/gs;
+	let result;
+	let data = [];
+	while (result = r.exec(s)) { // 循环匹配
+	  data.push({ title: result[1], time: result[2] });
+	}
+  console.log(data);
+
 </script>
 
 </body>

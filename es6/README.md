@@ -325,6 +325,251 @@ p.price = 1200; // 打印 价格属性被修改
 
 ```
 ## Number扩展
+参考html文件
+
+## 对象扩展
+- Object.is()判断两个值是否完全相等
+```js
+console.log(Object.is(120, 120)); // true
+console.log(Object.is(NaN, NaN)); // true
+```
+- Object.assign() 对象合并
+```js
+const obj = { name: 'Linda', age: 13 };
+const obj2 = { name: 'Alisha', age: 30, sex: 'woman' };
+console.log(obj, obj2); // 相同的后面会把前面覆盖
+```
+- Object.setPrototypeOf() 设置原型对象
+```js
+const school = { name: '艾利斯顿' };
+const city = {
+  xiaoqu: ['北京', '上海'],
+}
+Object.setPrototypeOf(school, city); // school.__proto__.xiqoqu
+Object.getPrototypeOf(school) // 得到{ xiaoqu: ... }
+```
+
+## 模块化
+> 是将大的程序文件拆分成许多小的程序文件，然后将小文件组合起来
+>
+模块化好处
+- 防止命名冲突 
+- 代码复用
+- 高维护性
+
+模块化规范产品
+> ES6之前JS无模块化规范，JS社区推出了模块化产品
+- Common JS => Node.js、Browserify(前端代码打包)
+- AMD => requireJS
+- CMD => seaJS
+
+ES6模块化语法
+> 由 2 个命令组成，`export`和`import`
+> 
+> `export`用于规定模块的对外接口
+> 
+> `import`用于引入其他模块提供的功能
+```js
+// export 语法
+// 分别暴露
+export let school = '哈佛';
+export const chnage = () => {
+  console.log('lalala~');
+}
+// 统一暴露
+export {
+  school,
+  chnage
+}
+
+// 默认暴露
+export default { name: '123' };
+
+// import 语法
+// 通用语法 使用as可修改引入名字
+import * as m1 from '...'; // 引入m1模块的内容
+// 解构赋值
+import { school, chnage } from '...';
+// 默认引入 针对默认暴露
+import { default as m3 } from '...';
+import m3 from '...';
+
+```
+# ES7
+## Array.prototype.includes()
+> 检测数组中是否包含某个元素，返回布尔值
+> 
+> 原来可以使用indexOf判断，结果返回数值不方便，无返回-1
+
+## `**` 指数操作符
+> 实现幂运算，功能与Math.pow()相同
+```js
+console.log(2 ** 10); // 1024
+console.log(Math.pow(2, 10)); // 1024
+```
+
+# ES8
+## async 和 await
+> async 和 await相结合可以让异步代码像同步代码一样，也是异步编程的解决方案
+
+async函数
+> 返回promise
+> 
+> promise结果由async函数返回的结果决定
+```js
+// 返回结果不是promise类型的对象，返回结果为成功状态的promise对象
+// 返回结果是promise类型的对象，状态取决于返回的promise
+async function fn () {
+  // return '123';
+  // throw new Error('出错了~');
+  return new Promise((resolve, reject) => {
+    resolve('成功的数据');
+  });
+}
+const result = fn();
+result.then(value => {
+  console.log(value);
+}, reason => {
+  console.log(reason);
+
+})
+
+```
+await 表达式
+> await 必须写在async函数中
+>
+> await 右侧表达式一般为promise对象
+> 
+> await 返回的是promise成功的值
+> 
+> await 的promise失败了，会抛出异常，需要通过try...catch捕获处理
+```js
+const p = new Promise((resolve, reject) => {
+  resolve('成功数据');
+});
+
+async function main () {
+  const result = await p;
+  console.log(result); // 成功数据
+};
+
+// 捕获错误
+async function main () {
+  try {
+    const result = await p;
+    console.log(result); // 成功数据
+  } catch (e) {
+    console.log(e); // promise 中 reject的数据
+  }
+};
+main();
+```
+# ES8对象方法扩展
+- Object.values() 获取对象的值，返回数组
+- Object.entries() 获取对象的键和值，返回数组
+```js
+const obj = {
+  name: '薛之谦',
+  age: 30,
+  cities: ['北京', '上海']
+};
+console.log(Object.entries(obj)); // [['name', '薛之谦'], ['cities', ['北京', '上海']]]
+
+// 可以用于创建Map
+const m = new Map(Object.entries(obj));
+console.log(m.get('name')); // 薛之谦
+```
+- Object.getOwnPropertyDescriptors() 获取对象属性的描述对象
+```js
+console.log(Object.getOwnPropertyDescriptors(obj));
+const obj = Object.create(null, {
+  name: {
+    value: '薛之谦',
+    writable: true,
+    configurable: true,
+    enumerable: true,
+  }
+})
+```
+#ES9
+## Rest参数
+> rest参数和spread扩展运算符在ES6中已经引入，但是只针对数组
+> 
+> ES9中支持对象...的使用
+```js
+const { a, b, ...c } = obj; // rest 参数
+// 扩展运算符
+const obj = {
+  ...a,
+  ...b
+};
+```
+## 正则扩展
+### 命名捕获分组
+```js
+
+const str = `<a href='http://baidu.com'>百度</a>`;
+const reg = /<a href='(?<url>.*)'>(?<text>.*)<\/a>/;
+const result = reg.exec(str);
+console.log(result.groups); // { url: http://baidu.com, text: 百度 }
+
+// 之前写法
+const reg = /<a href='(.*)'>(.*)<\/a>/;
+const result = reg.exec(str);
+console.log(result[1]); // http://baidu.com
+console.log(result[2]); // 百度 result.groups为undefined
+
+// 身份证号脱敏
+console.log('23070619970920022X'.replace(/^(.{6})(?:\d+)(.{4})$/, '\$1****\$2')); // 230706****022X
+```
+### 反向断言
+```js
+// 提取555
+const str = 'JS123455你知道么555啦啦啦';
+// 正向断言
+console.log(/\d+(?=啦)/.exec(str)); // 数字的后面是啦
+// 反向断言
+console.log(/?<=么\d+/.exec(str)); // 数字的前面是么
+
+```
+### dotAll模式
+> dot . 元字符，除换行符以外的任意单个字符
+```js
+let s = `
+  	<ul>
+  		<li>
+  			<a>肖申克的救赎</a>
+  			<p>上映时间：1994-09-10</p>
+			</li>
+  		<li>
+  			<a>阿甘正传</a>
+  			<p>上映时间：1994-07-15</p>
+			</li>
+		</ul>
+  `;
+  // 之前写法
+  // const r = /<li>\s+<a>(.*?)<\/a>\s+<p>(.*?)<\/p>/;
+
+	// .*? 加的？表示不能贪婪匹配
+  // 加上 s 匹配模式.能匹配任意字符，包含换行符
+	// g 执行全局匹配（查找所有匹配而非在找到第一个匹配后停止）
+	const r = /<li>.*?<a>(.*?)<\/a>.*?<p>(.*?)<\/p>/gs;
+	let result;
+	let data = [];
+	while (result = r.exec(s)) { // 循环匹配
+	  data.push({ title: result[1], time: result[2] });
+	}
+  console.log(data);
+```
+# ES10
+
+
+
+
+
+
+
+
 
 
 
