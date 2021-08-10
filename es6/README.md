@@ -18,8 +18,8 @@ let s2 = Symbol('1');
 console.log(s1 === s2); // false
 
 // Symbol.for()创建
-let s3 = Symbol('1');
-let s4 = Symbol('1');
+let s3 = Symbol.for('1');
+let s4 = Symbol.for('1');
 console.log(s3 === s4); // true
 
 
@@ -464,7 +464,7 @@ async function main () {
 };
 main();
 ```
-# ES8对象方法扩展
+## 对象方法扩展
 - Object.values() 获取对象的值，返回数组
 - Object.entries() 获取对象的键和值，返回数组
 ```js
@@ -491,7 +491,7 @@ const obj = Object.create(null, {
   }
 })
 ```
-#ES9
+# ES9
 ## Rest参数
 > rest参数和spread扩展运算符在ES6中已经引入，但是只针对数组
 > 
@@ -562,6 +562,161 @@ let s = `
   console.log(data);
 ```
 # ES10
+## 对象扩展方法
+- Object.fromEntries()
+> 将二维数组转换为对象，是`Object.entries()`的逆运算
+```js
+console.log(Object.fromEntries([['name', '陈梦'], ['age', 26]])); // { name: '陈梦', age: 26 }
+```
+## 字符串扩展方法
+- trimStart() 清除字符串左边空格
+- trimEnd() 清除字符串右边空格
+```js
+console.log('   2 3 3  '.trimStart()); // "2 3 3  "
+console.log('   2 3 3  '.trimEnd()); // "   2 3 3"
+
+// ES5 trim() 清除前后空格
+console.log('   2 3 3  '.trim()); // "2 3 3"
+```
+## 数组扩展方法
+- flat() 将多维数组转化为低维数组
+- flatMap() map和flat的结合，先map后flat
+```js
+console.log([1, [2, 3]].flat()); // [1, 2, 3]
+console.log([1, [2, 3, [4]]].flat()); // [1, 2, 3, [4]]
+// 参数为深度
+console.log([1, [2, 3, [4]]].flat(2)); // [1, 2, 3, 4]
+console.log([1, 2, 3].flatMap(it => [it * 10])); // [10, 20, 30]
+```
+## Symbol扩展
+- Symbol.prototype.description 获取描述信息
+```js
+const s = Symbol('你好');
+console.log(s.description); // 你好
+```
+
+# ES11
+## 私有属性
+```js
+class Person {
+  // 公有属性
+  name;
+  // 私有属性 变量前面添加 #
+  #age;
+  #weight;
+  constructor(name, age, weight) {
+    this.name = name;
+    this.#age = age;
+    this.#weight = weight;
+  }
+  intro() {
+    console.log(this.name);
+    console.log(this.#age);
+    console.log(this.#weight);
+  }
+}
+const p = new Person('Lina', 18, 90);
+console.log(p.name);
+// console.log(p.#age); // Private field '#age' must be declared in an enclosing class
+p.intro();
+```
+## Promise.allSettled()
+> 批量处理异步任务
+> 
+> 参数为promise数组，返回promise
+> 
+> 返回的promise永远是成功的状态，返回promise的结果是每一个promise的状态和值组成的数组
+```js
+const p1 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('成功数据1');
+  }, 1000)
+})
+const p2 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    // resolve('成功数据2')
+    reject('失败的数据2')
+  }, 2000)
+})
+
+const res = Promise.allSettled([p1, p2]);
+res.then((d) => {
+  console.log(d); // [{status: "fulfilled", value: "成功数据1"}, {status: "rejected", reason: "失败的数据2"}]
+
+})
+
+// all()方法如果有reject则会返回失败的promise，失败的值则是出错的promise失败的值
+// 都成功才会返回成功的promise
+
+// 有一个失败的情况
+const res = Promise.all([p1, p2]);
+console.log(res); // 失败的promise
+res.then((d) => {
+  console.log(d); // 不打印
+}, (reason) => {
+  console.log(reason); // 打印 失败的数据2
+})
+
+// 都成功的情况
+res.then((d) => {
+  console.log(d); // ["成功数据1", "成功数据2"];
+})
+```
+## String.prototype.mathAll()
+```js
+let s = `
+  	<ul>
+  		<li>
+  			<a>肖申克的救赎</a>
+  			<p>上映时间：1994-09-10</p>
+			</li>
+  		<li>
+  			<a>阿甘正传</a>
+  			<p>上映时间：1994-07-15</p>
+			</li>
+		</ul>
+  `;
+const reg = /<li>.*?<a>(.*?)<\/a>.*?<p>(.*?)<\/p>/gs;
+const result = str.matchAll(reg); // 返回的是RegExpStringIterator
+// 可以使用for of遍历，也可以使用扩展运算展开
+console.log([...result]); // [['li...', '肖申克的救赎', '上映时间：1994-09-10'], [...]]
+```
+## 可选链操作符
+> 用于判断对象层级取值
+```js
+function main(obj) {
+  // const dbHost = obj && obj.db && obj.db.host;
+  const dbHost = obj?.db?.host;
+  console.log(dbHost); // 如果不传入不会报错 输出undefined
+};
+main({
+  db: {
+    host: '192.168.10.123',
+  }
+});
+```
+## BigInt数据类型
+> 大整形，用于大数值运算
+
+```js
+// 声明 结尾加个 n
+const n = 123n;
+console.log(n, typeof n); // 123n bigint
+
+const max = Number.MAX_SAFE_INTEGER;
+console.log(max); // 9007199254740991
+console.log(max + 1); // // 9007199254740992
+console.log(max + 2); // // 9007199254740992  数值不会再增加了
+
+// BigInt只能和BigInt进行运算，返回BigInt
+console.log(BigInt(max) + BigInt(2));// 9007199254740993n
+```
+## globalThis
+> 始终指向全局对象，无论执行环境是什么，浏览器或者nodejs
+> 
+> 浏览器中`globalThis`就是window
+> 
+> nodejs中是global对象
 
 
 

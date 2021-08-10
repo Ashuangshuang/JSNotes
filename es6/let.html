@@ -81,8 +81,44 @@
 	while (result = r.exec(s)) { // 循环匹配
 	  data.push({ title: result[1], time: result[2] });
 	}
-  console.log(data);
+  // console.log(data);
 
+	const p1 = new Promise((resolve, reject) => {
+	  setTimeout(() => {
+      resolve('成功数据1');
+		}, 1000)
+	})
+  const p2 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('成功数据2')
+      // reject('失败的数据2')
+		}, 2000)
+  })
+	const res = Promise.all([p1, p2]);
+	console.log(res);
+  res.then((d) => {
+    console.log(d);
+
+  }, (reason) => {
+    console.log(reason);
+
+  })
+
+  let str = `
+  	<ul>
+  		<li>
+  			<a>肖申克的救赎</a>
+  			<p>上映时间：1994-09-10</p>
+			</li>
+  		<li>
+  			<a>阿甘正传</a>
+  			<p>上映时间：1994-07-15</p>
+			</li>
+		</ul>
+  `;
+  const reg = /<li>.*?<a>(.*?)<\/a>.*?<p>(.*?)<\/p>/gs;
+  const f = str.matchAll(reg);
+	console.log(f,[...f]);
 </script>
 
 </body>
